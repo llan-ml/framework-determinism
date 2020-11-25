@@ -17,8 +17,8 @@ from setuptools import setup
 import os
 
 distribution_name = 'framework-determinism'
-package_name = 'fwd9m' + '_reserve'
-# package_name = 'fwd9m'
+# package_name = 'fwd9m' + '_reserve'
+package_name = 'fwd9m'
 
 # This file needs to be executed during installation. It's not possible to
 # import the full package during installation because it will fail to import if
@@ -55,7 +55,7 @@ keywords = "framework tensorflow gpu deep-learning determinism"
 setup(
   name                          = distribution_name,
   version                       = version,
-  packages                      = [package_name],
+  packages                      = [package_name, f"{package_name}.tensorflow"],
   url                           = url,
   license                       = 'Apache 2.0',
   author                        = 'NVIDIA',
