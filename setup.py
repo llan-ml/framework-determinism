@@ -30,7 +30,7 @@ from version import __version__ as version
 # from warning import message as warning_message
 sys.path.remove(package_name)
 
-if warning_message:
+if False:
   long_description = warning_message
 else:
   readme = os.path.join(os.path.dirname(os.path.realpath(__file__)),
