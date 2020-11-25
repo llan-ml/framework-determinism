@@ -27,7 +27,7 @@ package_name = 'fwd9m'
 import sys
 sys.path.append(package_name)
 from version import __version__ as version
-from warning import message as warning_message
+# from warning import message as warning_message
 sys.path.remove(package_name)
 
 if warning_message:
