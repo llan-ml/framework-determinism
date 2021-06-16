@@ -59,6 +59,7 @@ def _enable_determinism(seed=None):
     os.environ['TF_DETERMINISTIC_OPS'] = '1'
   if in_ngc_cont and ngc_vers.at_least('19.06') or tf_vers.at_least('1.14'):
     _patch_unsorted_segment_sum()
+    _patch_unsorted_segment_mean()
     _patch_segment_sum()
     # Apply the fused softmax/cross-entropy patch here
     pass
