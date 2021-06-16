@@ -128,6 +128,11 @@ def _patch_unsorted_segment_sum():
   _new_unsorted_segment_sum.__doc__ = tf.math.unsorted_segment_sum.__doc__
   math_ops.unsorted_segment_sum = _new_unsorted_segment_sum # access via public API
   tf.math.unsorted_segment_sum = _new_unsorted_segment_sum # access via public API
+  
+def _patch_unsorted_segment_mean():
+  _new_unsorted_segment_mean.__doc__ = tf.math.unsorted_segment_mean.__doc__
+  math_ops.unsorted_segment_mean = _new_unsorted_segment_mean # access via public API
+  tf.math.unsorted_segment_mean = _new_unsorted_segment_mean # access via public API
 
 def _patch_segment_sum():
   _new_segment_sum.__doc__ = tf.math.segment_sum.__doc__
@@ -161,6 +166,31 @@ def _new_unsorted_segment_sum(data, segment_ids, num_segments, name=None):
       num_segments = ops.convert_to_tensor(num_segments, name="num_segments")
 
     result = gen_math_ops.unsorted_segment_sum(data, segment_ids, num_segments)
+    return tf.cast(result, dtype=orig_dtype)
+  
+def _new_unsorted_segment_mean(data, segment_ids, num_segments, name=None):
+  """ERROR: docstring should have been added programatically. """
+  with ops.name_scope(
+      name, "UnsortedSegmentMean", [data, segment_ids, num_segments]) as name:
+    # Note that data can be a vector-like list (or an n-dimensional
+    # tensor-like list of lists). We convert to tensor here to replicate the
+    # behavior of the pre-existing op.
+    data = tf.convert_to_tensor(data)
+
+    # Note that this patch does not provide determinism when the dtype of the
+    # data argument is tf.float64 or tf.complex128.
+    orig_dtype = data.dtype
+    if 'float' in str(orig_dtype):
+      data = tf.cast(data, dtype=tf.float64)
+    elif 'complex' in str(orig_dtype):
+      data = tf.cast(data, dtype=tf.complex128)
+
+    if not context.executing_eagerly():
+      data = ops.convert_to_tensor(data, name="input_data")
+      segment_ids = ops.convert_to_tensor(segment_ids, name="segment_ids")
+      num_segments = ops.convert_to_tensor(num_segments, name="num_segments")
+
+    result = gen_math_ops.unsorted_segment_mean(data, segment_ids, num_segments)
     return tf.cast(result, dtype=orig_dtype)
 
 # The original, pre-patched function is automatically-generated. Therefore, we
