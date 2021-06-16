@@ -176,6 +176,7 @@ def _new_unsorted_segment_mean(data, segment_ids, num_segments, name=None):
     # tensor-like list of lists). We convert to tensor here to replicate the
     # behavior of the pre-existing op.
     data = tf.convert_to_tensor(data)
+    N = math_ops._unsorted_segment_N(data, segment_ids, num_segments)
 
     # Note that this patch does not provide determinism when the dtype of the
     # data argument is tf.float64 or tf.complex128.
@@ -189,9 +190,9 @@ def _new_unsorted_segment_mean(data, segment_ids, num_segments, name=None):
       data = ops.convert_to_tensor(data, name="input_data")
       segment_ids = ops.convert_to_tensor(segment_ids, name="segment_ids")
       num_segments = ops.convert_to_tensor(num_segments, name="num_segments")
-
-    result = gen_math_ops.unsorted_segment_mean(data, segment_ids, num_segments)
-    return tf.cast(result, dtype=orig_dtype)
+      
+    result = gen_math_ops.unsorted_segment_sum(data, segment_ids, num_segments)
+    return tf.cast(result, dtype=orig_dtype) / N
 
 # The original, pre-patched function is automatically-generated. Therefore, we
 # cannot provide a URL to its location in the source repository.
