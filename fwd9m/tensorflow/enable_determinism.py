@@ -25,6 +25,7 @@ import tensorflow as tf
 
 from .patch import _patch_bias_add
 from .patch import _patch_unsorted_segment_sum
+from .patch import _patch_unsorted_segment_mean
 from .patch import _patch_segment_sum
 from ..utils import _Version as Version
 from ..version import __version__ as package_version
